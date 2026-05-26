@@ -67,244 +67,192 @@ onAuthStateChanged(auth, user => {
     loginScreen.style.display = "none";
     adminPanel.style.display = "block";
     loadLeads();
-loadSolarSettings();
+    loadProductPrices();
   } else {
     loginScreen.style.display = "flex";
     adminPanel.style.display = "none";
   }
 });
 
-async function loadLeads() {
-  leadsTable.innerHTML = `<tr><td colspan="7">Loading...</td></tr>`;
+async function loadProductPrices() {
+  const snap = await getDoc(doc(db, "solarProducts", "default"));
 
-  const q = query(collection(db, "quoteRequests"), orderBy("createdAt", "desc"));
+  if (!snap.exists()) return;
+
+  const d = snap.data();
+
+  panelWatt.value = d.panelWatt || "";
+  panelLength.value = d.panelLength || "";
+  panelWidth.value = d.panelWidth || "";
+  panelPrice.value = d.panelPrice || "";
+  inverterPrice.value = d.inverterPrice || "";
+  batteryPrice.value = d.batteryPrice || "";
+  mountingPrice.value = d.mountingPrice || "";
+  dcCablePrice.value = d.dcCablePrice || "";
+  acCablePrice.value = d.acCablePrice || "";
+  breakerPrice.value = d.breakerPrice || "";
+  earthingPrice.value = d.earthingPrice || "";
+  installationPrice.value = d.installationPrice || "";
+  sunHours.value = d.sunHours || "";
+  safetyMargin.value = d.safetyMargin || "";
+  batteryPercent.value = d.batteryPercent || "";
+  otherAccessoryPercent.value = d.otherAccessoryPercent || "";
+}
+
+async function saveProductPrices() {
+
+  const data = {
+    panelWatt: Number(panelWatt.value || 0),
+    panelLength: Number(panelLength.value || 0),
+    panelWidth: Number(panelWidth.value || 0),
+    panelPrice: Number(panelPrice.value || 0),
+    inverterPrice: Number(inverterPrice.value || 0),
+    batteryPrice: Number(batteryPrice.value || 0),
+    mountingPrice: Number(mountingPrice.value || 0),
+    dcCablePrice: Number(dcCablePrice.value || 0),
+    acCablePrice: Number(acCablePrice.value || 0),
+    breakerPrice: Number(breakerPrice.value || 0),
+    earthingPrice: Number(earthingPrice.value || 0),
+    installationPrice: Number(installationPrice.value || 0),
+    sunHours: Number(sunHours.value || 4.5),
+    safetyMargin: Number(safetyMargin.value || 25),
+    batteryPercent: Number(batteryPercent.value || 35),
+    otherAccessoryPercent: Number(otherAccessoryPercent.value || 10),
+    updatedAt: new Date()
+  };
+
+  await setDoc(doc(db, "solarProducts", "default"), data);
+
+  settingsMsg.textContent = "Product prices saved successfully.";
+}
+
+async function loadLeads() {
+
+  leadsTable.innerHTML =
+    `<tr><td colspan="9">Loading...</td></tr>`;
+
+  const q =
+    query(
+      collection(db, "quoteRequests"),
+      orderBy("createdAt", "desc")
+    );
+
   const snapshot = await getDocs(q);
 
-  allLeads = snapshot.docs.map(item => ({
-    id: item.id,
-    ...item.data()
-  }));
+  allLeads =
+    snapshot.docs.map(item => ({
+      id: item.id,
+      ...item.data()
+    }));
 
   updateStats();
   renderLeads();
 }
 
 function renderLeads() {
-  const search = searchInput.value.toLowerCase();
-  const status = statusFilter.value;
 
-  const filtered = allLeads.filter(lead => {
-    const text = `
+  const search =
+    searchInput.value.toLowerCase();
+
+  const status =
+    statusFilter.value;
+
+  const filtered =
+    allLeads.filter(lead => {
+
+      const text = `
       ${lead.name || ""}
       ${lead.phone || ""}
       ${lead.island || ""}
       ${lead.billNo || ""}
-      ${lead.accountNo || ""}
-      ${lead.meterNo || ""}
-    `.toLowerCase();
+      `
+      .toLowerCase();
 
-    return text.includes(search) && (status === "All" || lead.status === status);
-  });
+      return text.includes(search)
+      &&
+      (status === "All"
+      ||
+      (lead.status || "New") === status);
+    });
 
-  if (filtered.length === 0) {
-    leadsTable.innerHTML = `<tr><td colspan="7">No records found</td></tr>`;
+  if (!filtered.length) {
+    leadsTable.innerHTML =
+      `<tr><td colspan="9">No records found</td></tr>`;
     return;
   }
 
-  leadsTable.innerHTML = filtered.map(lead => `
-    <tr>
-      <td>${formatDate(lead.createdAt)}</td>
-      <td>${escapeHTML(lead.name)}</td>
-      <td>${escapeHTML(lead.phone)}</td>
-      <td>${escapeHTML(lead.island)}</td>
-      <td>${escapeHTML(lead.billNo)}</td>
-      <td><span class="status-pill ${lead.status || "New"}">${lead.status || "New"}</span></td>
-      <td><button class="view-btn" onclick="openDetails('${lead.id}')">View</button></td>
-    </tr>
-  `).join("");
+  leadsTable.innerHTML =
+    filtered.map(lead => {
+
+      const c = lead.calculation || {};
+
+      return `
+      <tr>
+        <td>${formatDate(lead.createdAt)}</td>
+        <td>${escapeHTML(lead.name)}</td>
+        <td>${escapeHTML(lead.phone)}</td>
+        <td>${escapeHTML(lead.island)}</td>
+        <td>${c.monthlyUsage || "-"} kWh</td>
+        <td>${c.requiredKw || "-"} kW</td>
+        <td>MVR ${formatMoney(c.totalPrice)}</td>
+        <td>${lead.status || "New"}</td>
+        <td>
+          <button
+          class="view-btn"
+          onclick="openDetails('${lead.id}')">
+          View
+          </button>
+        </td>
+      </tr>
+      `;
+    }).join("");
 }
 
 function updateStats() {
-  document.getElementById("totalCount").textContent = allLeads.length;
-  document.getElementById("newCount").textContent = countStatus("New");
-  document.getElementById("contactedCount").textContent = countStatus("Contacted");
-  document.getElementById("quotedCount").textContent = countStatus("Quoted");
-  document.getElementById("closedCount").textContent = countStatus("Closed");
+  totalCount.textContent = allLeads.length;
+  newCount.textContent = countStatus("New");
+  contactedCount.textContent = countStatus("Contacted");
+  quotedCount.textContent = countStatus("Quoted");
+  closedCount.textContent = countStatus("Closed");
 }
 
 function countStatus(status) {
-  return allLeads.filter(x => (x.status || "New") === status).length;
-}
-
-function openDetails(id) {
-  selectedLeadId = id;
-
-  const lead = allLeads.find(x => x.id === id);
-  if (!lead) return;
-
-  document.getElementById("detailsContent").innerHTML = `
-    <div><label>Name</label><p>${escapeHTML(lead.name)}</p></div>
-    <div><label>Phone</label><p>${escapeHTML(lead.phone)}</p></div>
-    <div><label>Island</label><p>${escapeHTML(lead.island)}</p></div>
-    <div><label>Bill No</label><p>${escapeHTML(lead.billNo)}</p></div>
-    <div><label>Account No</label><p>${escapeHTML(lead.accountNo)}</p></div>
-    <div><label>Meter No</label><p>${escapeHTML(lead.meterNo)}</p></div>
-    <div><label>Provider</label><p>${escapeHTML(lead.provider)}</p></div>
-    <div><label>Date</label><p>${formatDate(lead.createdAt)}</p></div>
-    <div class="full-detail"><label>Message</label><p>${escapeHTML(lead.message)}</p></div>
-  `;
-
-  document.getElementById("modalStatus").value = lead.status || "New";
-  document.getElementById("adminNotes").value = lead.adminNotes || "";
-  document.getElementById("detailsModal").classList.add("show");
-}
-
-function closeModal() {
-  document.getElementById("detailsModal").classList.remove("show");
-}
-
-async function saveStatus() {
-  if (!selectedLeadId) return;
-
-  const newStatus = document.getElementById("modalStatus").value;
-  const adminNotes = document.getElementById("adminNotes").value.trim();
-
-  await updateDoc(doc(db, "quoteRequests", selectedLeadId), {
-    status: newStatus,
-    adminNotes
-  });
-
-  const lead = allLeads.find(x => x.id === selectedLeadId);
-  if (lead) {
-    lead.status = newStatus;
-    lead.adminNotes = adminNotes;
-  }
-
-  updateStats();
-  renderLeads();
-  closeModal();
-}
-
-function whatsappCustomer() {
-  const lead = allLeads.find(x => x.id === selectedLeadId);
-  if (!lead || !lead.phone) return;
-
-  let phone = lead.phone.replace(/\D/g, "");
-
-  if (!phone.startsWith("960")) {
-    phone = "960" + phone;
-  }
-
-  const text =
-    `Hello ${lead.name || ""},%0A%0A` +
-    `This is Haagiri Solar regarding your Fenaka solar quotation request.%0A` +
-    `We would like to follow up with you.`;
-
-  window.open(`https://wa.me/${phone}?text=${text}`, "_blank");
-}
-
-function exportCSV() {
-  const rows = [
-    ["Date", "Name", "Phone", "Island", "Bill No", "Account No", "Meter No", "Provider", "Status", "Admin Notes", "Message"]
-  ];
-
-  allLeads.forEach(lead => {
-    rows.push([
-      formatDate(lead.createdAt),
-      lead.name || "",
-      lead.phone || "",
-      lead.island || "",
-      lead.billNo || "",
-      lead.accountNo || "",
-      lead.meterNo || "",
-      lead.provider || "",
-      lead.status || "",
-      lead.adminNotes || "",
-      lead.message || ""
-    ]);
-  });
-
-  const csv = rows.map(row =>
-    row.map(value => `"${String(value).replaceAll('"', '""')}"`).join(",")
-  ).join("\n");
-
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "haagiri-quote-requests.csv";
-  a.click();
-
-  URL.revokeObjectURL(url);
+  return allLeads.filter(
+    x => (x.status || "New") === status
+  ).length;
 }
 
 function formatDate(timestamp) {
   if (!timestamp || !timestamp.toDate) return "-";
 
-  return timestamp.toDate().toLocaleString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
+  return timestamp.toDate()
+    .toLocaleString("en-GB");
+}
+
+function formatMoney(value) {
+  if (!value) return "-";
+  return Number(value).toLocaleString();
 }
 
 function escapeHTML(value) {
   if (!value) return "-";
 
   return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;");
 }
 
-searchInput.addEventListener("input", renderLeads);
-statusFilter.addEventListener("change", renderLeads);
+searchInput.addEventListener(
+  "input",
+  renderLeads
+);
+
+statusFilter.addEventListener(
+  "change",
+  renderLeads
+);
 
 window.adminLogin = adminLogin;
 window.adminLogout = adminLogout;
-window.openDetails = openDetails;
-window.closeModal = closeModal;
-window.saveStatus = saveStatus;
-window.whatsappCustomer = whatsappCustomer;
-window.exportCSV = exportCSV;
-async function loadSolarSettings() {
-  const ref = doc(db, "solarSettings", "default");
-  const snap = await getDoc(ref);
-
-  if (!snap.exists()) return;
-
-  const data = snap.data();
-
-  document.getElementById("setPanelWatt").value = data.panelWatt || "";
-  document.getElementById("setPanelLength").value = data.panelLength || "";
-  document.getElementById("setPanelWidth").value = data.panelWidth || "";
-  document.getElementById("setPanelPrice").value = data.panelPrice || "";
-  document.getElementById("setInverterPricePerKw").value = data.inverterPricePerKw || "";
-  document.getElementById("setBatteryPricePerKwh").value = data.batteryPricePerKwh || "";
-  document.getElementById("setAccessoryPercent").value = data.accessoryPercent || "";
-  document.getElementById("setSunHours").value = data.sunHours || "";
-}
-
-async function saveSolarSettings() {
-  const data = {
-    panelWatt: Number(document.getElementById("setPanelWatt").value),
-    panelLength: Number(document.getElementById("setPanelLength").value),
-    panelWidth: Number(document.getElementById("setPanelWidth").value),
-    panelPrice: Number(document.getElementById("setPanelPrice").value),
-    inverterPricePerKw: Number(document.getElementById("setInverterPricePerKw").value),
-    batteryPricePerKwh: Number(document.getElementById("setBatteryPricePerKwh").value),
-    accessoryPercent: Number(document.getElementById("setAccessoryPercent").value),
-    sunHours: Number(document.getElementById("setSunHours").value),
-    updatedAt: new Date()
-  };
-
-  await setDoc(doc(db, "solarSettings", "default"), data);
-
-  document.getElementById("settingsMsg").textContent = "Solar settings saved successfully.";
-}
-window.saveSolarSettings = saveSolarSettings;
+window.saveProductPrices = saveProductPrices;

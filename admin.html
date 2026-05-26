@@ -11,7 +11,7 @@
 <section class="login-screen" id="loginScreen">
   <div class="login-card">
     <h1>Haagiri Admin</h1>
-    <p>Login to manage quote requests</p>
+    <p>Login to manage quote requests and product prices</p>
 
     <input type="email" id="loginEmail" placeholder="Admin Email">
     <input type="password" id="loginPassword" placeholder="Password">
@@ -26,7 +26,7 @@
 <header class="admin-header">
   <div>
     <h1>Haagiri Solar Admin</h1>
-    <p>Manage Fenaka quote requests and solar calculator settings</p>
+    <p>Manage leads, product prices and solar calculator values</p>
   </div>
 
   <div style="display:flex; gap:10px; flex-wrap:wrap;">
@@ -38,52 +38,94 @@
 <main class="admin-main">
 
   <section class="solar-settings">
-    <h2>Solar Calculator Settings</h2>
-    <p>These values are used by the public website calculator.</p>
+    <h2>Product Price Management</h2>
+    <p>Change prices, wattage and panel size here. Website calculator will use these values automatically.</p>
 
     <div class="settings-grid">
+
       <div class="form-group">
         <label>Panel Wattage</label>
-        <input type="number" id="setPanelWatt" placeholder="Example: 550">
+        <input type="number" id="panelWatt" placeholder="550">
       </div>
 
       <div class="form-group">
         <label>Panel Length Meter</label>
-        <input type="number" id="setPanelLength" placeholder="Example: 2.28" step="0.01">
+        <input type="number" id="panelLength" placeholder="2.28" step="0.01">
       </div>
 
       <div class="form-group">
         <label>Panel Width Meter</label>
-        <input type="number" id="setPanelWidth" placeholder="Example: 1.13" step="0.01">
+        <input type="number" id="panelWidth" placeholder="1.13" step="0.01">
       </div>
 
       <div class="form-group">
-        <label>Panel Price MVR</label>
-        <input type="number" id="setPanelPrice" placeholder="Example: 2500">
+        <label>Panel Price / Panel</label>
+        <input type="number" id="panelPrice" placeholder="2500">
       </div>
 
       <div class="form-group">
-        <label>Inverter Price Per kW</label>
-        <input type="number" id="setInverterPricePerKw" placeholder="Example: 1800">
+        <label>Inverter Price / kW</label>
+        <input type="number" id="inverterPrice" placeholder="1800">
       </div>
 
       <div class="form-group">
-        <label>Battery Price Per kWh</label>
-        <input type="number" id="setBatteryPricePerKwh" placeholder="Example: 3500">
+        <label>Battery Price / kWh</label>
+        <input type="number" id="batteryPrice" placeholder="3500">
       </div>
 
       <div class="form-group">
-        <label>Accessories Percentage</label>
-        <input type="number" id="setAccessoryPercent" placeholder="Example: 15">
+        <label>Mounting Price / Panel</label>
+        <input type="number" id="mountingPrice" placeholder="350">
+      </div>
+
+      <div class="form-group">
+        <label>DC Cable Fixed Price</label>
+        <input type="number" id="dcCablePrice" placeholder="1500">
+      </div>
+
+      <div class="form-group">
+        <label>AC Cable Fixed Price</label>
+        <input type="number" id="acCablePrice" placeholder="1200">
+      </div>
+
+      <div class="form-group">
+        <label>Breaker Fixed Price</label>
+        <input type="number" id="breakerPrice" placeholder="1000">
+      </div>
+
+      <div class="form-group">
+        <label>Earthing Fixed Price</label>
+        <input type="number" id="earthingPrice" placeholder="900">
+      </div>
+
+      <div class="form-group">
+        <label>Installation Price / kW</label>
+        <input type="number" id="installationPrice" placeholder="750">
       </div>
 
       <div class="form-group">
         <label>Sun Hours</label>
-        <input type="number" id="setSunHours" placeholder="Example: 4.5" step="0.1">
+        <input type="number" id="sunHours" placeholder="4.5" step="0.1">
       </div>
+
+      <div class="form-group">
+        <label>Safety Margin %</label>
+        <input type="number" id="safetyMargin" placeholder="25">
+      </div>
+
+      <div class="form-group">
+        <label>Battery Usage %</label>
+        <input type="number" id="batteryPercent" placeholder="35">
+      </div>
+
+      <div class="form-group">
+        <label>Other Accessories %</label>
+        <input type="number" id="otherAccessoryPercent" placeholder="10">
+      </div>
+
     </div>
 
-    <button onclick="saveSolarSettings()" class="admin-home">Save Solar Settings</button>
+    <button onclick="saveProductPrices()" class="admin-home">Save Product Prices</button>
     <p id="settingsMsg"></p>
   </section>
 
@@ -120,12 +162,13 @@
           <th>Island</th>
           <th>Usage</th>
           <th>System</th>
+          <th>Price</th>
           <th>Status</th>
           <th>Action</th>
         </tr>
       </thead>
       <tbody id="leadsTable">
-        <tr><td colspan="8">Loading...</td></tr>
+        <tr><td colspan="9">Loading...</td></tr>
       </tbody>
     </table>
   </section>

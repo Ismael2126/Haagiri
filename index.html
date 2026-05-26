@@ -176,49 +176,74 @@
 <section class="quote-section section" id="quote">
   <div class="quote-box">
     <div class="quote-info">
-      <span class="badge">Fenaka Instant Quote</span>
-      <h2>Get a quick solar estimate</h2>
-      <p>Enter your Fenaka bill details and send the request directly to WhatsApp.</p>
+      <span class="badge">Fenaka Solar Calculator</span>
+      <h2>Calculate your solar system</h2>
+      <p>Enter Fenaka usage details and get estimated system size, panels, inverter, battery and accessories.</p>
+
+      <div class="calc-result" id="calcResult">
+        <h3>Estimated System</h3>
+        <p>Enter usage to see calculation.</p>
+      </div>
     </div>
 
     <form class="fenaka-form" onsubmit="sendQuote(event)">
       <div class="form-group">
-        <label for="name">Full Name</label>
-        <input type="text" id="name" placeholder="Enter full name" required>
+        <label>Full Name</label>
+        <input type="text" id="name" required>
       </div>
 
       <div class="form-group">
-        <label for="phone">Phone Number</label>
-        <input type="tel" id="phone" placeholder="Enter phone number" required>
+        <label>Phone Number</label>
+        <input type="tel" id="phone" required>
       </div>
 
       <div class="form-group">
-        <label for="island">Island</label>
-        <input type="text" id="island" placeholder="Example: Kulhudhuffushi" required>
+        <label>Island</label>
+        <input type="text" id="island" required>
       </div>
 
       <div class="form-group">
-        <label for="billNo">Fenaka Bill Number</label>
-        <input type="text" id="billNo" placeholder="Enter bill number" required>
+        <label>Fenaka Bill Number</label>
+        <input type="text" id="billNo" required>
       </div>
 
       <div class="form-group">
-        <label for="accountNo">Account Number</label>
-        <input type="text" id="accountNo" placeholder="Enter account number" required>
+        <label>Account Number</label>
+        <input type="text" id="accountNo" required>
       </div>
 
       <div class="form-group">
-        <label for="meterNo">Meter Number</label>
-        <input type="text" id="meterNo" placeholder="Enter meter number">
+        <label>Meter Number</label>
+        <input type="text" id="meterNo">
+      </div>
+
+      <div class="form-group">
+        <label>Monthly Usage / Units</label>
+        <input type="number" id="monthlyUsage" placeholder="Example: 450" required oninput="calculateSolar()">
+      </div>
+
+      <div class="form-group">
+        <label>Panel Watt</label>
+        <input type="number" id="panelWatt" value="550" oninput="calculateSolar()">
+      </div>
+
+      <div class="form-group">
+        <label>Backup Hours Needed</label>
+        <input type="number" id="backupHours" value="6" oninput="calculateSolar()">
+      </div>
+
+      <div class="form-group">
+        <label>Sun Hours</label>
+        <input type="number" id="sunHours" value="4.5" step="0.1" oninput="calculateSolar()">
       </div>
 
       <div class="form-group full-field">
-        <label for="message">Extra Details</label>
-        <textarea id="message" placeholder="Any extra details if needed"></textarea>
+        <label>Extra Details</label>
+        <textarea id="message"></textarea>
       </div>
 
       <button class="btn primary full-field" type="submit">
-        Send Fenaka Quote Request
+        Save & Send Fenaka Quote Request
       </button>
     </form>
   </div>
@@ -252,7 +277,7 @@
       <span>📍</span>
       <div>
         <small>Location</small>
-        <strong>Maldives</strong>
+        <strong>KULHUDHUFFUSHI</strong>
       </div>
     </div>
   </div>

@@ -1,4 +1,12 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
 import {
   getFirestore,
   collection,
@@ -6,7 +14,9 @@ import {
   updateDoc,
   doc,
   query,
-  orderBy
+  orderBy,
+  setDoc,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -20,14 +30,49 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const db = getFirestore(app);
 
 let allLeads = [];
 let selectedLeadId = null;
 
+const loginScreen = document.getElementById("loginScreen");
+const adminPanel = document.getElementById("adminPanel");
 const leadsTable = document.getElementById("leadsTable");
 const searchInput = document.getElementById("searchInput");
 const statusFilter = document.getElementById("statusFilter");
+
+async function adminLogin() {
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value.trim();
+  const msg = document.getElementById("loginMsg");
+
+  msg.textContent = "Logging in...";
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    msg.textContent = "";
+  } catch (error) {
+    msg.textContent = "Login failed. Check email/password.";
+    console.error(error);
+  }
+}
+
+async function adminLogout() {
+  await signOut(auth);
+}
+
+onAuthStateChanged(auth, user => {
+  if (user) {
+    loginScreen.style.display = "none";
+    adminPanel.style.display = "block";
+    loadLeads();
+loadSolarSettings();
+  } else {
+    loginScreen.style.display = "flex";
+    adminPanel.style.display = "none";
+  }
+});
 
 async function loadLeads() {
   leadsTable.innerHTML = `<tr><td colspan="7">Loading...</td></tr>`;
@@ -58,10 +103,7 @@ function renderLeads() {
       ${lead.meterNo || ""}
     `.toLowerCase();
 
-    const matchSearch = text.includes(search);
-    const matchStatus = status === "All" || lead.status === status;
-
-    return matchSearch && matchStatus;
+    return text.includes(search) && (status === "All" || lead.status === status);
   });
 
   if (filtered.length === 0) {
@@ -76,10 +118,8 @@ function renderLeads() {
       <td>${escapeHTML(lead.phone)}</td>
       <td>${escapeHTML(lead.island)}</td>
       <td>${escapeHTML(lead.billNo)}</td>
-      <td><span class="status-pill ${lead.status}">${lead.status || "New"}</span></td>
-      <td>
-        <button class="view-btn" onclick="openDetails('${lead.id}')">View</button>
-      </td>
+      <td><span class="status-pill ${lead.status || "New"}">${lead.status || "New"}</span></td>
+      <td><button class="view-btn" onclick="openDetails('${lead.id}')">View</button></td>
     </tr>
   `).join("");
 }
@@ -93,7 +133,7 @@ function updateStats() {
 }
 
 function countStatus(status) {
-  return allLeads.filter(x => x.status === status).length;
+  return allLeads.filter(x => (x.status || "New") === status).length;
 }
 
 function openDetails(id) {
@@ -115,6 +155,7 @@ function openDetails(id) {
   `;
 
   document.getElementById("modalStatus").value = lead.status || "New";
+  document.getElementById("adminNotes").value = lead.adminNotes || "";
   document.getElementById("detailsModal").classList.add("show");
 }
 
@@ -126,22 +167,45 @@ async function saveStatus() {
   if (!selectedLeadId) return;
 
   const newStatus = document.getElementById("modalStatus").value;
+  const adminNotes = document.getElementById("adminNotes").value.trim();
 
   await updateDoc(doc(db, "quoteRequests", selectedLeadId), {
-    status: newStatus
+    status: newStatus,
+    adminNotes
   });
 
   const lead = allLeads.find(x => x.id === selectedLeadId);
-  if (lead) lead.status = newStatus;
+  if (lead) {
+    lead.status = newStatus;
+    lead.adminNotes = adminNotes;
+  }
 
   updateStats();
   renderLeads();
   closeModal();
 }
 
+function whatsappCustomer() {
+  const lead = allLeads.find(x => x.id === selectedLeadId);
+  if (!lead || !lead.phone) return;
+
+  let phone = lead.phone.replace(/\D/g, "");
+
+  if (!phone.startsWith("960")) {
+    phone = "960" + phone;
+  }
+
+  const text =
+    `Hello ${lead.name || ""},%0A%0A` +
+    `This is Haagiri Solar regarding your Fenaka solar quotation request.%0A` +
+    `We would like to follow up with you.`;
+
+  window.open(`https://wa.me/${phone}?text=${text}`, "_blank");
+}
+
 function exportCSV() {
   const rows = [
-    ["Date", "Name", "Phone", "Island", "Bill No", "Account No", "Meter No", "Provider", "Status", "Message"]
+    ["Date", "Name", "Phone", "Island", "Bill No", "Account No", "Meter No", "Provider", "Status", "Admin Notes", "Message"]
   ];
 
   allLeads.forEach(lead => {
@@ -155,6 +219,7 @@ function exportCSV() {
       lead.meterNo || "",
       lead.provider || "",
       lead.status || "",
+      lead.adminNotes || "",
       lead.message || ""
     ]);
   });
@@ -200,9 +265,46 @@ function escapeHTML(value) {
 searchInput.addEventListener("input", renderLeads);
 statusFilter.addEventListener("change", renderLeads);
 
+window.adminLogin = adminLogin;
+window.adminLogout = adminLogout;
 window.openDetails = openDetails;
 window.closeModal = closeModal;
 window.saveStatus = saveStatus;
+window.whatsappCustomer = whatsappCustomer;
 window.exportCSV = exportCSV;
+async function loadSolarSettings() {
+  const ref = doc(db, "solarSettings", "default");
+  const snap = await getDoc(ref);
 
-loadLeads();
+  if (!snap.exists()) return;
+
+  const data = snap.data();
+
+  document.getElementById("setPanelWatt").value = data.panelWatt || "";
+  document.getElementById("setPanelLength").value = data.panelLength || "";
+  document.getElementById("setPanelWidth").value = data.panelWidth || "";
+  document.getElementById("setPanelPrice").value = data.panelPrice || "";
+  document.getElementById("setInverterPricePerKw").value = data.inverterPricePerKw || "";
+  document.getElementById("setBatteryPricePerKwh").value = data.batteryPricePerKwh || "";
+  document.getElementById("setAccessoryPercent").value = data.accessoryPercent || "";
+  document.getElementById("setSunHours").value = data.sunHours || "";
+}
+
+async function saveSolarSettings() {
+  const data = {
+    panelWatt: Number(document.getElementById("setPanelWatt").value),
+    panelLength: Number(document.getElementById("setPanelLength").value),
+    panelWidth: Number(document.getElementById("setPanelWidth").value),
+    panelPrice: Number(document.getElementById("setPanelPrice").value),
+    inverterPricePerKw: Number(document.getElementById("setInverterPricePerKw").value),
+    batteryPricePerKwh: Number(document.getElementById("setBatteryPricePerKwh").value),
+    accessoryPercent: Number(document.getElementById("setAccessoryPercent").value),
+    sunHours: Number(document.getElementById("setSunHours").value),
+    updatedAt: new Date()
+  };
+
+  await setDoc(doc(db, "solarSettings", "default"), data);
+
+  document.getElementById("settingsMsg").textContent = "Solar settings saved successfully.";
+}
+window.saveSolarSettings = saveSolarSettings;

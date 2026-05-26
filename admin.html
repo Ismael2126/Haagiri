@@ -11,7 +11,7 @@
 <section class="login-screen" id="loginScreen">
   <div class="login-card">
     <h1>Haagiri Admin</h1>
-    <p>Login to manage quote requests and product prices</p>
+    <p>Login to manage quote requests and quotations</p>
 
     <input type="email" id="loginEmail" placeholder="Admin Email">
     <input type="password" id="loginPassword" placeholder="Password">
@@ -26,7 +26,7 @@
 <header class="admin-header">
   <div>
     <h1>Haagiri Solar Admin</h1>
-    <p>Manage leads, product prices and solar calculator values</p>
+    <p>Manage leads, product prices and quotation PDFs</p>
   </div>
 
   <div style="display:flex; gap:10px; flex-wrap:wrap;">
@@ -39,10 +39,9 @@
 
   <section class="solar-settings">
     <h2>Product Price Management</h2>
-    <p>Change prices, wattage and panel size here. Website calculator will use these values automatically.</p>
+    <p>Change prices, wattage and panel size here.</p>
 
     <div class="settings-grid">
-
       <div class="form-group">
         <label>Panel Wattage</label>
         <input type="number" id="panelWatt" placeholder="550">
@@ -122,7 +121,6 @@
         <label>Other Accessories %</label>
         <input type="number" id="otherAccessoryPercent" placeholder="10">
       </div>
-
     </div>
 
     <button onclick="saveProductPrices()" class="admin-home">Save Product Prices</button>
@@ -186,6 +184,20 @@
     <div class="details-grid" id="detailsContent"></div>
 
     <div class="status-box">
+      <label>Quotation Type</label>
+      <select id="quotationType">
+        <option value="On-Grid">On-Grid Solar System</option>
+        <option value="Off-Grid">Off-Grid Solar System</option>
+      </select>
+
+      <label>Quotation Validity</label>
+      <input type="text" id="quotationValidity" value="7 Days">
+
+      <label>Quotation Notes</label>
+      <textarea id="quotationNotes">Price may change based on site inspection, roof condition, cable distance and final equipment selection.</textarea>
+    </div>
+
+    <div class="status-box">
       <label>Admin Notes</label>
       <textarea id="adminNotes" placeholder="Write notes about this customer..."></textarea>
     </div>
@@ -201,11 +213,15 @@
       </select>
 
       <button onclick="saveStatus()">Save Status & Notes</button>
+      <button onclick="createQuotation()" style="margin-top:10px;">Create Quotation PDF</button>
+      <button onclick="sendQuotationWhatsApp()" style="margin-top:10px;">WhatsApp Quotation</button>
+      <button onclick="emailQuotation()" style="margin-top:10px;">Email Quotation</button>
       <button onclick="whatsappCustomer()" style="margin-top:10px;">WhatsApp Customer</button>
     </div>
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script type="module" src="admin.js"></script>
 </body>
 </html>

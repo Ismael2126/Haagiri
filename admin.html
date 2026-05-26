@@ -26,7 +26,7 @@
 <header class="admin-header">
   <div>
     <h1>Haagiri Solar Admin</h1>
-    <p>Manage Fenaka quote requests</p>
+    <p>Manage Fenaka quote requests and solar calculator settings</p>
   </div>
 
   <div style="display:flex; gap:10px; flex-wrap:wrap;">
@@ -36,6 +36,56 @@
 </header>
 
 <main class="admin-main">
+
+  <section class="solar-settings">
+    <h2>Solar Calculator Settings</h2>
+    <p>These values are used by the public website calculator.</p>
+
+    <div class="settings-grid">
+      <div class="form-group">
+        <label>Panel Wattage</label>
+        <input type="number" id="setPanelWatt" placeholder="Example: 550">
+      </div>
+
+      <div class="form-group">
+        <label>Panel Length Meter</label>
+        <input type="number" id="setPanelLength" placeholder="Example: 2.28" step="0.01">
+      </div>
+
+      <div class="form-group">
+        <label>Panel Width Meter</label>
+        <input type="number" id="setPanelWidth" placeholder="Example: 1.13" step="0.01">
+      </div>
+
+      <div class="form-group">
+        <label>Panel Price MVR</label>
+        <input type="number" id="setPanelPrice" placeholder="Example: 2500">
+      </div>
+
+      <div class="form-group">
+        <label>Inverter Price Per kW</label>
+        <input type="number" id="setInverterPricePerKw" placeholder="Example: 1800">
+      </div>
+
+      <div class="form-group">
+        <label>Battery Price Per kWh</label>
+        <input type="number" id="setBatteryPricePerKwh" placeholder="Example: 3500">
+      </div>
+
+      <div class="form-group">
+        <label>Accessories Percentage</label>
+        <input type="number" id="setAccessoryPercent" placeholder="Example: 15">
+      </div>
+
+      <div class="form-group">
+        <label>Sun Hours</label>
+        <input type="number" id="setSunHours" placeholder="Example: 4.5" step="0.1">
+      </div>
+    </div>
+
+    <button onclick="saveSolarSettings()" class="admin-home">Save Solar Settings</button>
+    <p id="settingsMsg"></p>
+  </section>
 
   <section class="admin-stats">
     <div><h3 id="totalCount">0</h3><p>Total Leads</p></div>
@@ -59,27 +109,7 @@
 
     <button onclick="exportCSV()">Export CSV</button>
   </section>
-<section class="solar-settings">
-  <h2>Solar Product Settings</h2>
-  <p>These values are used for public solar calculator.</p>
 
-  <div class="settings-grid">
-    <input type="number" id="setPanelWatt" placeholder="Panel Wattage e.g. 550">
-    <input type="number" id="setPanelLength" placeholder="Panel Length meter e.g. 2.28" step="0.01">
-    <input type="number" id="setPanelWidth" placeholder="Panel Width meter e.g. 1.13" step="0.01">
-    <input type="number" id="setPanelPrice" placeholder="Panel Price MVR">
-    <input type="number" id="setInverterPricePerKw" placeholder="Inverter Price per kW">
-    <input type="number" id="setBatteryPricePerKwh" placeholder="Battery Price per kWh">
-    <input type="number" id="setAccessoryPercent" placeholder="Accessories % e.g. 15">
-    <input type="number" id="setSunHours" placeholder="Sun Hours e.g. 4.5" step="0.1">
-  </div>
-
-  <button onclick="saveSolarSettings()" class="admin-home">
-    Save Solar Settings
-  </button>
-
-  <p id="settingsMsg"></p>
-</section>
   <section class="admin-table-wrap">
     <table class="admin-table">
       <thead>
@@ -88,13 +118,14 @@
           <th>Name</th>
           <th>Phone</th>
           <th>Island</th>
-          <th>Bill No</th>
+          <th>Usage</th>
+          <th>System</th>
           <th>Status</th>
           <th>Action</th>
         </tr>
       </thead>
       <tbody id="leadsTable">
-        <tr><td colspan="7">Loading...</td></tr>
+        <tr><td colspan="8">Loading...</td></tr>
       </tbody>
     </table>
   </section>
@@ -113,7 +144,7 @@
 
     <div class="status-box">
       <label>Admin Notes</label>
-      <textarea id="adminNotes" placeholder="Write notes about this customer..." style="width:100%;min-height:100px;border-radius:14px;padding:12px;"></textarea>
+      <textarea id="adminNotes" placeholder="Write notes about this customer..."></textarea>
     </div>
 
     <div class="status-box">

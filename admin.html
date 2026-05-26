@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Haagiri Solar Admin</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="admin-body">
+
+<header class="admin-header">
+  <div>
+    <h1>Haagiri Solar Admin</h1>
+    <p>Manage Fenaka quote requests</p>
+  </div>
+
+  <a href="index.html" class="admin-home">View Website</a>
+</header>
+
+<main class="admin-main">
+
+  <section class="admin-stats">
+    <div><h3 id="totalCount">0</h3><p>Total Leads</p></div>
+    <div><h3 id="newCount">0</h3><p>New</p></div>
+    <div><h3 id="contactedCount">0</h3><p>Contacted</p></div>
+    <div><h3 id="quotedCount">0</h3><p>Quoted</p></div>
+    <div><h3 id="closedCount">0</h3><p>Closed</p></div>
+  </section>
+
+  <section class="admin-tools">
+    <input type="text" id="searchInput" placeholder="Search name, phone, island, bill no...">
+
+    <select id="statusFilter">
+      <option value="All">All Status</option>
+      <option value="New">New</option>
+      <option value="Contacted">Contacted</option>
+      <option value="Quoted">Quoted</option>
+      <option value="Closed">Closed</option>
+      <option value="Rejected">Rejected</option>
+    </select>
+
+    <button onclick="exportCSV()">Export Excel CSV</button>
+  </section>
+
+  <section class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Island</th>
+          <th>Bill No</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="leadsTable">
+        <tr>
+          <td colspan="7">Loading...</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+</main>
+
+<div class="modal" id="detailsModal">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeModal()">×</button>
+
+    <h2>Customer Details</h2>
+
+    <div class="details-grid" id="detailsContent"></div>
+
+    <div class="status-box">
+      <label>Update Status</label>
+      <select id="modalStatus">
+        <option>New</option>
+        <option>Contacted</option>
+        <option>Quoted</option>
+        <option>Closed</option>
+        <option>Rejected</option>
+      </select>
+
+      <button onclick="saveStatus()">Save Status</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="admin.js"></script>
+</body>
+</html>

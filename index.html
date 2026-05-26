@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Haagiri Solar | Smart Solar Solutions Maldives</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="header">
+  <a href="#home" class="logo">
+    <span class="logo-sun">☀</span>
+    <div>
+      <h1>Haagiri Solar</h1>
+      <p>Powering Maldives Smarter</p>
+    </div>
+  </a>
+
+  <nav id="nav">
+    <a href="#home" class="active">Home</a>
+    <a href="#solutions">Solutions</a>
+    <a href="#projects">Projects</a>
+    <a href="#quote">Instant Quote</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <a href="#quote" class="nav-quote">Get Quote</a>
+
+  <button class="menu-btn" onclick="toggleMenu()">☰</button>
+</header>
+
+<section class="hero" id="home">
+  <div class="hero-glow"></div>
+
+  <div class="hero-content">
+    <span class="badge">Solar • Battery • Inverter • Installation</span>
+    <h2>Power Your Island With Clean Solar Energy</h2>
+    <p>
+      Haagiri Solar provides smart solar installation, battery backup,
+      and energy solutions for homes, businesses, vessels, and islands.
+    </p>
+
+    <div class="hero-buttons">
+      <a href="#quote" class="btn primary">Get Instant Quote</a>
+      <a href="#solutions" class="btn secondary">Explore Solutions</a>
+    </div>
+  </div>
+
+  <div class="solar-card">
+    <div class="sun"></div>
+    <h3>Today’s Solar Impact</h3>
+    <div class="power-box">
+      <strong>8.6 kW</strong>
+      <span>Estimated Daily Production</span>
+    </div>
+    <div class="mini-grid">
+      <div>
+        <b>92%</b>
+        <small>Efficiency</small>
+      </div>
+      <div>
+        <b>24/7</b>
+        <small>Backup</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div>
+    <h3>150+</h3>
+    <p>Solar Panels Installed</p>
+  </div>
+  <div>
+    <h3>40+</h3>
+    <p>Happy Customers</p>
+  </div>
+  <div>
+    <h3>12+</h3>
+    <p>Island Projects</p>
+  </div>
+  <div>
+    <h3>100%</h3>
+    <p>Clean Energy Focus</p>
+  </div>
+</section>
+
+<section class="section" id="solutions">
+  <div class="section-title">
+    <span>Our Solutions</span>
+    <h2>Built for Maldives Weather & Island Life</h2>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="icon">🏠</div>
+      <h3>Home Solar</h3>
+      <p>Reduce electricity bills with reliable rooftop solar systems.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">🏢</div>
+      <h3>Business Solar</h3>
+      <p>Custom solar solutions for shops, offices, warehouses, and factories.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">🔋</div>
+      <h3>Battery Backup</h3>
+      <p>Keep your power running during outages with smart battery storage.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">🚢</div>
+      <h3>Marine & Island Solar</h3>
+      <p>Solar systems for vessels, islands, harbors, and remote locations.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section dark-strip">
+  <div class="split">
+    <div>
+      <span class="badge">Why Haagiri Solar?</span>
+      <h2>Reliable installation, clean design, and long-term support.</h2>
+      <p>
+        We design each system based on your actual power usage,
+        available roof space, battery needs, and future expansion.
+      </p>
+
+      <ul class="check-list">
+        <li>Free basic consultation</li>
+        <li>Solar panel and inverter setup</li>
+        <li>Battery backup planning</li>
+        <li>After-installation support</li>
+      </ul>
+    </div>
+
+    <div class="feature-panel">
+      <h3>Smart Energy Package</h3>
+      <p>Perfect for homes and small businesses.</p>
+      <div class="price">From MVR 25,000</div>
+      <a href="#quote" class="btn primary">Request Package</a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="projects">
+  <div class="section-title">
+    <span>Recent Projects</span>
+    <h2>Clean, modern and professional solar installations</h2>
+  </div>
+
+  <div class="project-grid">
+    <div class="project">
+      <div class="project-img one"></div>
+      <h3>Residential Rooftop</h3>
+      <p>5kW solar system with battery backup.</p>
+    </div>
+
+    <div class="project">
+      <div class="project-img two"></div>
+      <h3>Business Power Setup</h3>
+      <p>Energy saving solar solution for commercial use.</p>
+    </div>
+
+    <div class="project">
+      <div class="project-img three"></div>
+      <h3>Island Solar Support</h3>
+      <p>Off-grid power solution for remote island needs.</p>
+    </div>
+  </div>
+</section>
+
+<section class="quote-section section" id="quote">
+  <div class="quote-box">
+    <div class="quote-info">
+      <span class="badge">Fenaka Instant Quote</span>
+      <h2>Get a quick solar estimate</h2>
+      <p>Enter your Fenaka bill details and send the request directly to WhatsApp.</p>
+    </div>
+
+    <form class="fenaka-form" onsubmit="sendQuote(event)">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" placeholder="Enter full name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" placeholder="Enter phone number" required>
+      </div>
+
+      <div class="form-group">
+        <label for="island">Island</label>
+        <input type="text" id="island" placeholder="Example: Kulhudhuffushi" required>
+      </div>
+
+      <div class="form-group">
+        <label for="billNo">Fenaka Bill Number</label>
+        <input type="text" id="billNo" placeholder="Enter bill number" required>
+      </div>
+
+      <div class="form-group">
+        <label for="accountNo">Account Number</label>
+        <input type="text" id="accountNo" placeholder="Enter account number" required>
+      </div>
+
+      <div class="form-group">
+        <label for="meterNo">Meter Number</label>
+        <input type="text" id="meterNo" placeholder="Enter meter number">
+      </div>
+
+      <div class="form-group full-field">
+        <label for="message">Extra Details</label>
+        <textarea id="message" placeholder="Any extra details if needed"></textarea>
+      </div>
+
+      <button class="btn primary full-field" type="submit">
+        Send Fenaka Quote Request
+      </button>
+    </form>
+  </div>
+</section>
+
+<footer id="contact" class="footer">
+  <div>
+    <h2>Haagiri Solar</h2>
+    <p>Smart solar energy solutions for Maldives.</p>
+  </div>
+
+  <div>
+    <p><strong>Phone:</strong> +960 7777777</p>
+    <p><strong>Email:</strong> info@haagirisolar.mv</p>
+    <p><strong>Location:</strong> Maldives</p>
+  </div>
+</footer>
+
+<a class="whatsapp" href="https://wa.me/9607777777" target="_blank">WhatsApp</a>
+
+<script type="module" src="script.js"></script>
+</body>
+</html>

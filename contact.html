@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact | Haagiri Solar</title>
+
+<link rel="stylesheet" href="style.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+
+<header class="header">
+  <a href="#home" class="logo">
+    <span class="logo-sun">☀</span>
+    <div>
+      <h1>Haagiri Solar</h1>
+      <p>Powering Maldives Smarter</p>
+    </div>
+  </a>
+
+  <nav id="nav">
+  <a href="#home">Home</a>
+  <a href="#solutions">Solutions</a>
+  <a href="#projects">Projects</a>
+  <a href="#quote">Instant Quote</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+  <a href="#quote" class="nav-quote">Get Quote</a>
+
+  <button class="menu-btn" onclick="toggleMenu()">☰</button>
+</header>
+
+<section class="hero">
+  <div class="hero-glow"></div>
+
+  <div class="container hero-grid">
+
+    <div class="hero-content">
+
+      <div class="badge">Contact Haagiri Solar</div>
+
+      <h1>Let's power your project</h1>
+
+      <p>
+        Contact us for solar consultation, quotation,
+        battery systems, or project discussion.
+      </p>
+
+      <div class="hero-stats">
+        <div>
+          <strong>Call</strong>
+          <span>+960 7777777</span>
+        </div>
+
+        <div>
+          <strong>Email</strong>
+          <span>info@haagiri.mv</span>
+        </div>
+
+        <div>
+          <strong>Support</strong>
+          <span>24/7</span>
+        </div>
+      </div>
+
+    </div>
+
+    <form class="quote-form" id="quoteForm">
+
+      <input type="text" id="name" placeholder="Full Name" required>
+
+      <input type="tel" id="phone" placeholder="Phone / WhatsApp" required>
+
+      <input type="email" id="email" placeholder="Email Address">
+
+      <select id="type" required>
+        <option value="">Select Service</option>
+        <option>Home Solar</option>
+        <option>Commercial Solar</option>
+        <option>Battery Backup</option>
+        <option>Island Solar</option>
+      </select>
+
+      <textarea id="message"
+      placeholder="Tell us about your project"></textarea>
+
+      <button type="submit" class="btn primary full">
+        Send Inquiry
+      </button>
+
+      <p class="form-note" id="formNote"></p>
+
+    </form>
+
+  </div>
+</section>
+
+<section class="contact-strip">
+  <div class="container contact-wrap">
+
+    <div>
+      <h2>Quick Contact</h2>
+      <p>
+        WhatsApp us for fast support and solar quotation.
+      </p>
+    </div>
+
+    <a class="btn whatsapp"
+    href="https://wa.me/9607777777"
+    target="_blank">
+      WhatsApp Now 
+    </a>
+
+  </div>
+</section>
+
+<footer class="footer" id="contact">
+  <div class="container footer-wrap">
+    <p>© 2026 Haagiri Solar</p>
+    <p>Solar energy solutions Maldives</p>
+  </div>
+</footer>
+
+</body>
+</html>
